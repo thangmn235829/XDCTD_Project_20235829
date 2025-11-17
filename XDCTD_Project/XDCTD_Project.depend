@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1763372408 source:c:\users\admin\onedrive - hanoi university of science and technology\desktop\xdctd_project\xdctd_project\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+
