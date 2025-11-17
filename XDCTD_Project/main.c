@@ -230,7 +230,7 @@ int compareIndexWords(const void *a, const void *b) {
 int main()
 {
     // open files
-    char textName[] = "alice30.txt"; // name of the input text
+    char textName[] = "thuchanh1.txt"; // name of the input text
     char stopwFileName[] = "stopw.txt"; // name of the file containing stopwords
     FILE* textFile = openFile(textName);
     FILE* stopwFile = openFile(stopwFileName);
