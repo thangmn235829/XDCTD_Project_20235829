@@ -23,6 +23,7 @@ void error(ErrorCode err, int lineNo, int colNo) {
     printf("%d-%d:%s\n", lineNo, colNo, ERM_INVALIDSYMBOL);
     break;
   }
-  exit(-1);
+  // exit(-1);
+  // remove exit(-1) since this will terminate the entire system
 }
 
