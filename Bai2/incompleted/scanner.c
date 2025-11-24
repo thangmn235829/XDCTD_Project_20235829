@@ -134,12 +134,6 @@ Token* readConstChar(void) {
   }
 }
 
-
-// Giả định các hàm sau đã được định nghĩa trong các tệp khác:
-// Token* makeToken(TokenType tokenType, int lineNo, int colNo);
-// void readChar(void);
-// void error(ErrorCode err, int lineNo, int colNo);
-
 Token* getToken(void) {
   Token *token;
   int ln = lineNo; // Lưu vị trí bắt đầu token
