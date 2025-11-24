@@ -135,29 +135,169 @@ Token* readConstChar(void) {
 }
 
 
+// Giả định các hàm sau đã được định nghĩa trong các tệp khác:
+// Token* makeToken(TokenType tokenType, int lineNo, int colNo);
+// void readChar(void);
+// void error(ErrorCode err, int lineNo, int colNo);
+// void skipComment(void); // Cần được hoàn thiện ở nhiệm vụ sau
+
 Token* getToken(void) {
   Token *token;
-  int ln, cn;
+  int ln = lineNo; // Lưu vị trí bắt đầu token
+  int cn = colNo;
 
-  if (currentChar == EOF) 
-    return makeToken(TK_EOF, lineNo, colNo);
+  if (currentChar == EOF)
+    return makeToken(TK_EOF, ln, cn);
 
   switch (charCodes[currentChar]) {
-  case CHAR_SPACE: skipBlank(); return getToken();
-  case CHAR_LETTER: return readIdentKeyword();
-  case CHAR_DIGIT: return readNumber();
-  case CHAR_PLUS: 
-    token = makeToken(SB_PLUS, lineNo, colNo);
-    readChar(); 
-    return token;
-    // ....
-    // TODO
-    // ....
-  default:
-    token = makeToken(TK_NONE, lineNo, colNo);
-    error(ERR_INVALIDSYMBOL, lineNo, colNo);
-    readChar(); 
-    return token;
+    case CHAR_SPACE: 
+      skipBlank(); 
+      return getToken();
+    case CHAR_LETTER: 
+      return readIdentKeyword();
+    case CHAR_DIGIT: 
+      return readNumber();
+    case CHAR_PLUS: 
+      token = makeToken(SB_PLUS, ln, cn);
+      readChar(); 
+      return token;
+    case CHAR_MINUS: 
+      token = makeToken(SB_MINUS, ln, cn);
+      readChar(); 
+      return token;
+
+    case CHAR_TIMES:
+      // Token đơn: Toán tử nhân '*' (SB_TIMES)
+      token = makeToken(SB_TIMES, ln, cn);
+      readChar();
+      return token;
+
+    case CHAR_SLASH:
+      // Token đơn: Toán tử chia '/' (SB_SLASH)
+      token = makeToken(SB_SLASH, ln, cn);
+      readChar();
+      return token;
+
+    case CHAR_LT:
+      readChar(); // Đọc '<'
+      if (currentChar == '=') {
+        // Token hai ký tự: Toán tử <= (SB_LE)
+        token = makeToken(SB_LE, ln, cn);
+        readChar();
+        return token;
+      } else {
+        // Token đơn: Toán tử < (SB_LT)
+        return makeToken(SB_LT, ln, cn);
+      }
+
+    case CHAR_GT:
+      readChar(); // Đọc '>'
+      if (currentChar == '=') {
+        // Token hai ký tự: Toán tử >= (SB_GE)
+        token = makeToken(SB_GE, ln, cn);
+        readChar();
+        return token;
+      } else {
+        // Token đơn: Toán tử > (SB_GT)
+        return makeToken(SB_GT, ln, cn);
+      }
+
+    case CHAR_EXCLAIMATION:
+      readChar(); // Đọc '!'
+      if (currentChar == '=') {
+        // Token hai ký tự: Toán tử != (SB_NEQ)
+        token = makeToken(SB_NEQ, ln, cn);
+        readChar();
+        return token;
+      } else {
+        // Ký tự '!' không hợp lệ nếu không theo sau bởi '='
+        token = makeToken(TK_NONE, ln, cn);
+        error(ERR_INVALIDSYMBOL, ln, cn);
+        return token;
+      }
+
+    case CHAR_EQ:
+      // Token đơn: Toán tử = (SB_EQ)
+      token = makeToken(SB_EQ, ln, cn);
+      readChar();
+      return token;
+
+    case CHAR_COMMA:
+      // Token đơn: Dấu phẩy ',' (SB_COMMA)
+      token = makeToken(SB_COMMA, ln, cn);
+      readChar();
+      return token;
+
+    case CHAR_PERIOD:
+      readChar(); // Đọc '.'
+      if (currentChar == ')') {
+        // Token hai ký tự: Chỉ mục mảng đóng '.)' (SB_RSEL)
+        token = makeToken(SB_RSEL, ln, cn);
+        readChar();
+        return token;
+      } else {
+        // Token đơn: Dấu chấm '.' (SB_PERIOD)
+        return makeToken(SB_PERIOD, ln, cn);
+      }
+
+    case CHAR_COLON:
+      readChar(); // Đọc ':'
+      if (currentChar == '=') {
+        // Token hai ký tự: Toán tử gán ':=' (SB_ASSIGN)
+        token = makeToken(SB_ASSIGN, ln, cn);
+        readChar();
+        return token;
+      } else {
+        // Token đơn: Dấu hai chấm ':' (SB_COLON)
+        return makeToken(SB_COLON, ln, cn);
+      }
+
+    case CHAR_SEMICOLON:
+      // Token đơn: Dấu chấm phẩy ';' (SB_SEMICOLON)
+      token = makeToken(SB_SEMICOLON, ln, cn);
+      readChar();
+      return token;
+      
+    case CHAR_SINGLEQUOTE:
+      // Hằng ký tự đơn 'c'
+      return readConstChar(); // Hàm này phải xử lý việc đọc ký tự và dấu đóng '
+
+    case CHAR_LPAR:
+      readChar(); // Đọc '('
+      switch (charCodes[currentChar]) {
+        case CHAR_PERIOD:
+          // Token hai ký tự: Chỉ mục mảng mở '(. ' (SB_LSEL)
+          token = makeToken(SB_LSEL, ln, cn);
+          readChar();
+          return token;
+        case CHAR_TIMES:
+          // Bắt đầu chú thích '(*' (Bỏ qua và gọi lại getToken)
+          skipComment(); 
+          return getToken();
+        default:
+          // Token đơn: Dấu ngoặc đơn mở '(' (SB_LPAR)
+          return makeToken(SB_LPAR, ln, cn);
+      }
+
+    case CHAR_RPAR:
+      // Token đơn: Dấu ngoặc đơn đóng ')' (SB_RPAR)
+      token = makeToken(SB_RPAR, ln, cn);
+      readChar();
+      return token;
+      
+    // KẾT THÚC PHẦN HOÀN THIỆN
+
+    case CHAR_UNKNOWN:
+      token = makeToken(TK_NONE, ln, cn);
+      error(ERR_INVALIDSYMBOL, ln, cn);
+      readChar();
+      return token;
+      
+    default:
+      token = makeToken(TK_NONE, ln, cn);
+      error(ERR_INVALIDSYMBOL, ln, cn);
+      readChar();
+      return token;
   }
 }
 
