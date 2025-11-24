@@ -47,6 +47,7 @@ void skipComment() {
 }
 
 Token* readIdentKeyword(void) {
+  // TODO
   Token *token = makeToken(TK_IDENT, lineNo, colNo);
   int i = 0;
   int tooLong = 0;
@@ -77,6 +78,7 @@ Token* readIdentKeyword(void) {
 }
 
 Token* readNumber(void) {
+  // TODO
   Token *token = makeToken(TK_NUMBER, lineNo, colNo);
   int i = 0;
 
