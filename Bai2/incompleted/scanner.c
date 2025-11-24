@@ -88,7 +88,7 @@ Token *readIdentKeyword(void)
   Token *token = makeToken(TK_IDENT, lineNo, colNo);
   int count = 0;
 
-  // Sửa lỗi: Đọc hết định danh và kiểm tra độ dài sau.
+  // Sá»­a lá»—i: Äá»c háº¿t Ä‘á»‹nh danh vÃ  kiá»ƒm tra Ä‘á»™ dÃ i sau.
   while (currentChar != EOF && (charCodes[currentChar] == CHAR_LETTER || charCodes[currentChar] == CHAR_DIGIT))
   {
     if (count < MAX_IDENT_LEN)
@@ -104,7 +104,7 @@ Token *readIdentKeyword(void)
     error(ERR_IDENTTOOLONG, token->lineNo, token->colNo);
   }
 
-  // Sửa lỗi cuối cùng: Xử lý tràn bộ đệm khi gán ký tự kết thúc chuỗi.
+  // Sá»­a lá»—i cuá»‘i cÃ¹ng: Xá»­ lÃ½ trÃ n bá»™ Ä‘á»‡m khi gÃ¡n kÃ½ tá»± káº¿t thÃºc chuá»—i.
   if (count > MAX_IDENT_LEN)
   {
     token->string[MAX_IDENT_LEN] = '\0';
@@ -114,7 +114,7 @@ Token *readIdentKeyword(void)
     token->string[count] = '\0';
   }
 
-  // Chuyển chuỗi sang chữ hoa để so sánh từ khóa không phân biệt hoa thường
+  // Chuyá»ƒn chuá»—i sang chá»¯ hoa Ä‘á»ƒ so sÃ¡nh tá»« khÃ³a khÃ´ng phÃ¢n biá»‡t hoa thÆ°á»ng
   char tempString[MAX_IDENT_LEN + 1];
   int i = 0;
   while (token->string[i] != '\0')
@@ -149,36 +149,36 @@ Token *readConstChar(void)
 {
   Token *token = makeToken(TK_CHAR, lineNo, colNo);
 
-  readChar(); // Bỏ qua dấu ' mở đầu
+  readChar(); // Bá» qua dáº¥u ' má»Ÿ Ä‘áº§u
 
   if (currentChar == EOF || charCodes[currentChar] == CHAR_SINGLEQUOTE)
   {
     error(ERR_INVALIDCHARCONSTANT, token->lineNo, token->colNo);
-    token->tokenType = TK_NONE; // Đánh dấu là token không hợp lệ
+    token->tokenType = TK_NONE; // ÄÃ¡nh dáº¥u lÃ  token khÃ´ng há»£p lá»‡
     return token;
   }
 
   token->string[0] = currentChar;
   token->string[1] = '\0';
 
-  readChar(); // Đọc ký tự nội dung
+  readChar(); // Äá»c kÃ½ tá»± ná»™i dung
 
   if (currentChar == EOF || charCodes[currentChar] != CHAR_SINGLEQUOTE)
   {
     error(ERR_INVALIDCHARCONSTANT, token->lineNo, token->colNo);
-    // Bỏ qua phần còn lại của hằng ký tự không hợp lệ
+    // Bá» qua pháº§n cÃ²n láº¡i cá»§a háº±ng kÃ½ tá»± khÃ´ng há»£p lá»‡
     while (currentChar != EOF && charCodes[currentChar] != CHAR_SINGLEQUOTE && currentChar != '\n')
     {
       readChar();
     }
-    // Nếu chưa phải dấu nháy đơn, có thể nó đã gặp cuối dòng
+    // Náº¿u chÆ°a pháº£i dáº¥u nhÃ¡y Ä‘Æ¡n, cÃ³ thá»ƒ nÃ³ Ä‘Ã£ gáº·p cuá»‘i dÃ²ng
     if (charCodes[currentChar] == CHAR_SINGLEQUOTE)
       readChar();
-    token->tokenType = TK_NONE; // Đánh dấu là token không hợp lệ
+    token->tokenType = TK_NONE; // ÄÃ¡nh dáº¥u lÃ  token khÃ´ng há»£p lá»‡
     return token;
   }
 
-  readChar(); // Bỏ qua dấu ' kết thúc
+  readChar(); // Bá» qua dáº¥u ' káº¿t thÃºc
   return token;
 }
 
@@ -191,7 +191,7 @@ Token *getToken(void)
     return makeToken(TK_EOF, lineNo, colNo);
 
   switch (charCodes[currentChar])
-  { // Đảm bảo currentChar != EOF trước khi vào switch
+  { // Äáº£m báº£o currentChar != EOF trÆ°á»›c khi vÃ o switch
   case CHAR_SPACE:
     skipBlank();
     return getToken();
@@ -274,12 +274,12 @@ Token *getToken(void)
     {
       return makeToken(SB_GT, ln, cn);
     }
-  // Bổ sung case để xử lý toán tử !=
+  // Bá»• sung case Ä‘á»ƒ xá»­ lÃ½ toÃ¡n tá»­ !=
   case CHAR_EXCLAIMATION:
     ln = lineNo;
     cn = colNo;
     readChar();
-    // skipBlank(); // Bỏ qua khoảng trắng giữa ! và =
+    // skipBlank(); // Bá» qua khoáº£ng tráº¯ng giá»¯a ! vÃ  =
     if (currentChar != EOF && charCodes[currentChar] == CHAR_EQ)
     {
       readChar();
@@ -288,7 +288,7 @@ Token *getToken(void)
     else
     {
       error(ERR_INVALIDSYMBOL, ln, cn);
-      // Sửa lỗi vòng lặp vô hạn: trả về token lỗi thay vì gọi đệ quy
+      // Sá»­a lá»—i vÃ²ng láº·p vÃ´ háº¡n: tráº£ vá» token lá»—i thay vÃ¬ gá»i Ä‘á»‡ quy
       token = makeToken(TK_NONE, ln, cn);
       return token;
     }
@@ -296,7 +296,7 @@ Token *getToken(void)
     ln = lineNo;
     cn = colNo;
     readChar();
-    skipBlank(); // Cho phép khoảng trắng giữa : và =
+    skipBlank(); // Cho phÃ©p khoáº£ng tráº¯ng giá»¯a : vÃ  =
     if (currentChar != EOF && charCodes[currentChar] == CHAR_EQ)
     {
       readChar();
@@ -308,15 +308,11 @@ Token *getToken(void)
     }
   case CHAR_SINGLEQUOTE:
     return readConstChar();
-  case CHAR_SHARP:
-    // Bỏ qua dòng chú thích bắt đầu bằng #
-    skipLine();
-    return getToken();
   default:
     token = makeToken(TK_NONE, lineNo, colNo);
     error(ERR_INVALIDSYMBOL, lineNo, colNo);
-    readChar(); // Đọc ký tự tiếp theo để tránh lặp vô hạn
-    // Bỏ qua toàn bộ dòng bị lỗi để tiếp tục phân tích
+    readChar(); // Äá»c kÃ½ tá»± tiáº¿p theo Ä‘á»ƒ trÃ¡nh láº·p vÃ´ háº¡n
+    // Bá» qua toÃ n bá»™ dÃ²ng bá»‹ lá»—i Ä‘á»ƒ tiáº¿p tá»¥c phÃ¢n tÃ­ch
     skipLine();
     return getToken();
   }
@@ -327,7 +323,7 @@ Token *getToken(void)
 void printToken(Token *token)
 {
 
-  // Không in token lỗi (TK_NONE)
+  // KhÃ´ng in token lá»—i (TK_NONE)
   if (token->tokenType == TK_NONE)
     return;
 
