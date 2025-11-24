@@ -27,15 +27,78 @@ void skipBlank() {
 }
 
 void skipComment() {
-  // TODO
+  /* Assumes currentChar is the '*' after '(' that started the comment */
+  readChar(); /* consume the '*' */
+
+  while (currentChar != EOF) {
+    if (charCodes[currentChar] == CHAR_TIMES) {
+      readChar(); /* consume '*' */
+      if (currentChar != EOF && charCodes[currentChar] == CHAR_RPAR) {
+        readChar(); /* consume ')' and exit comment */
+        return;
+      }
+    } else {
+      readChar();
+    }
+  }
+
+  /* EOF reached before closing "*)" */
+  error(ERR_ENDOFCOMMENT, lineNo, colNo);
 }
 
 Token* readIdentKeyword(void) {
-  // TODO
+  Token *token = makeToken(TK_IDENT, lineNo, colNo);
+  int i = 0;
+  int tooLong = 0;
+
+  while (charCodes[currentChar] == CHAR_LETTER ||
+         charCodes[currentChar] == CHAR_DIGIT) {
+    if (i < MAX_IDENT_LEN) {
+      token->string[i++] = (char) currentChar;
+    } else {
+      tooLong = 1; /* still consume remaining identifier chars but don't store */
+    }
+    readChar();
+  }
+
+  token->string[i] = '\0';
+
+  if (tooLong) {
+    token->tokenType = TK_NONE;
+    error(ERR_IDENTTOOLONG, token->lineNo, token->colNo);
+    return token;
+  }
+
+  /* check if the identifier is a keyword */
+  TokenType kt = checkKeyword(token->string);
+  if (kt != TK_NONE) token->tokenType = kt;
+
+  return token;
 }
 
 Token* readNumber(void) {
-  // TODO
+  Token *token = makeToken(TK_NUMBER, lineNo, colNo);
+  int i = 0;
+
+  while (charCodes[currentChar] == CHAR_DIGIT) {
+    if (i < MAX_IDENT_LEN) {
+      token->string[i++] = (char)currentChar;
+    } else {
+      /* too many digits for token->string: consume remaining digits,
+         report error and return TK_NONE (reuse ERR_IDENTTOOLONG) */
+      readChar();
+      while (charCodes[currentChar] == CHAR_DIGIT) readChar();
+      token->string[MAX_IDENT_LEN] = '\0';
+      token->tokenType = TK_NONE;
+      error(ERR_IDENTTOOLONG, token->lineNo, token->colNo);
+      return token;
+    }
+    readChar();
+  }
+
+  token->string[i] = '\0';
+  token->value = atoi(token->string);
+  return token;
 }
 
 Token* readConstChar(void) {
