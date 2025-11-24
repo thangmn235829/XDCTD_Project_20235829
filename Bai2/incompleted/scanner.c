@@ -139,7 +139,6 @@ Token* readConstChar(void) {
 // Token* makeToken(TokenType tokenType, int lineNo, int colNo);
 // void readChar(void);
 // void error(ErrorCode err, int lineNo, int colNo);
-// void skipComment(void); // Cần được hoàn thiện ở nhiệm vụ sau
 
 Token* getToken(void) {
   Token *token;
