@@ -1,4 +1,4 @@
-/* 
+/*
  * @copyright (c) 2008, Hedspi, Hanoi University of Technology
  * @author Huu-Duc Nguyen
  * @version 1.0
@@ -8,8 +8,10 @@
 #include <stdlib.h>
 #include "error.h"
 
-void error(ErrorCode err, int lineNo, int colNo) {
-  switch (err) {
+void error(ErrorCode err, int lineNo, int colNo)
+{
+  switch (err)
+  {
   case ERR_ENDOFCOMMENT:
     printf("%d-%d:%s\n", lineNo, colNo, ERM_ENDOFCOMMENT);
     break;
@@ -22,8 +24,14 @@ void error(ErrorCode err, int lineNo, int colNo) {
   case ERR_INVALIDSYMBOL:
     printf("%d-%d:%s\n", lineNo, colNo, ERM_INVALIDSYMBOL);
     break;
+  // Xử lý các lỗi mới
+  case ERR_STRINGTOOLONG:
+    printf("%d-%d:%s\n", lineNo, colNo, ERM_STRINGTOOLONG);
+    break;
+  case ERR_ENDOFQUOTEEXPECTED:
+    printf("%d-%d:%s\n", lineNo, colNo, ERM_ENDOFQUOTEEXPECTED);
+    break;
   }
-  // exit(-1);
-  // remove exit(-1) since this will terminate the entire system
+  // Thoát chương trình ngay khi có lỗi
+  exit(-1);
 }
-
