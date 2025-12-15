@@ -1,23 +1,4 @@
-/*
- * @copyright (c) 2008, Hedspi, Hanoi University of Technology
- * @author Huu-Duc Nguyen
- * @version 1.0
- */
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "reader.h"
-#include "scanner.h"
-#include "parser.h"
-#include "error.h"
-#include "debug.h"
-
-Token *currentToken;
-Token *lookAhead;
-
-extern Type* intType;
-extern Type* charType;
-extern SymTab* symtab;/*
+/* 
  * @copyright (c) 2008, Hedspi, Hanoi University of Technology
  * @author Huu-Duc Nguyen
  * @version 1.0
@@ -84,7 +65,7 @@ void compileBlock(void) {
     } while (lookAhead->tokenType == TK_IDENT);
 
     compileBlock2();
-  }
+  } 
   else compileBlock2();
 }
 
@@ -106,7 +87,7 @@ void compileBlock2(void) {
     } while (lookAhead->tokenType == TK_IDENT);
 
     compileBlock3();
-  }
+  } 
   else compileBlock3();
 }
 
@@ -128,7 +109,7 @@ void compileBlock3(void) {
     } while (lookAhead->tokenType == TK_IDENT);
 
     compileBlock4();
-  }
+  } 
   else compileBlock4();
 }
 
@@ -285,7 +266,7 @@ Type* compileType(void) {
   Type* type = NULL;
 
   switch (lookAhead->tokenType) {
-  case KW_INTEGER:
+  case KW_INTEGER: 
     eat(KW_INTEGER);
     type = (Type*) malloc(sizeof(Type));
     type->typeClass = TP_INT;
@@ -332,13 +313,13 @@ Type* compileBasicType(void) {
   Type* type = NULL;
 
   switch (lookAhead->tokenType) {
-  case KW_INTEGER:
+  case KW_INTEGER: 
     eat(KW_INTEGER);
     type = (Type*) malloc(sizeof(Type));
     type->typeClass = TP_INT;
     break;
-  case KW_CHAR:
-    eat(KW_CHAR);
+  case KW_CHAR: 
+    eat(KW_CHAR); 
     type = (Type*) malloc(sizeof(Type));
     type->typeClass = TP_CHAR;
     break;
@@ -457,7 +438,7 @@ void compileIfSt(void) {
   compileCondition();
   eat(KW_THEN);
   compileStatement();
-  if (lookAhead->tokenType == KW_ELSE)
+  if (lookAhead->tokenType == KW_ELSE) 
     compileElseSt();
 }
 
@@ -501,7 +482,7 @@ void compileArguments(void) {
 
     eat(SB_RPAR);
     break;
-    // Check FOLLOW set
+    // Check FOLLOW set 
   case SB_TIMES:
   case SB_SLASH:
   case SB_PLUS:
